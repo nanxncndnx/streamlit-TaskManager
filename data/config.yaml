@@ -1,0 +1,24 @@
+credentials:
+  usernames:
+    jsmith:
+      email: jsmith@gmail.com
+      logged_in: False # Will be managed automatically
+      name: John Smith
+      password: abc # Will be hashed automatically
+    rbriggs:
+      email: rbriggs@gmail.com
+      logged_in: False # Will be managed automatically
+      name: Rebecca Briggs
+      password: def # Will be hashed automatically
+    nanxncndnx:
+      email: machiavelli.co4@gmail.com
+      logged_in: False # Will be managed automatically
+      name: Toofan
+      password: sher221B! # Will be hashed automatically
+cookie:
+  expiry_days: 30
+  key: "lkjhf" # Must be string
+  name: Azazel
+preauthorized:
+  emails:
+  - melsby@gmail.com
