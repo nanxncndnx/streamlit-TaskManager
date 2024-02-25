@@ -63,7 +63,8 @@ def Login(authenticator):
     authenticator.login()
     if st.session_state["authentication_status"]:
         name = f'Welcome *{st.session_state["name"]}*'
-        app.createPage(name)
+        username = st.session_state["username"]
+        app.createPage(name , username)
 
     elif st.session_state["authentication_status"] is False:
         st.error('Username or password is incorrect')

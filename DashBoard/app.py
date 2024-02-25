@@ -1,8 +1,11 @@
+import os
+import sqlite3 as sql
+from dotenv import load_dotenv
 import streamlit as st
 from streamlit_option_menu import option_menu
-from . import Home
+from . import Home, assistant, Tasks, Settings
 
-def createPage(name):
+def createPage(name , username):
     #DashBoard sidebar =>
     with st.sidebar:
         st.header(f":orange[{name}]", divider = "rainbow")
@@ -15,6 +18,33 @@ def createPage(name):
         "nav-link-selected": {"background-color": "orange"},
         }
     )
+        
+    #loadin and connecting database =>
+    load_dotenv()
+    BASE_DIR = os.getenv("DB_path")
+    db_user = os.path.join(BASE_DIR, "User.db")
+    conn = sql.connect(db_user)
+    c = conn.cursor()
+
+    #check admin =>
+    check_admin = False
+    isAdmin = c.execute(f"""SELECT isAdmin FROM USERS WHERE username = '{username}' ;""")
+    isAdmin = isAdmin.fetchone()
+
+    if isAdmin[0] == 1:
+        check_admin = True
     
+    #pages =>
     if selected == "Home":
         Home.createPage()
+
+    if selected == "Tasks" and check_admin == True:
+        Tasks.AdminTasks()
+    elif selected == "Tasks" and check_admin == False:
+        Tasks.UserTasks()
+
+    if selected == "Assistant":
+        assistant.createPage()
+
+    if selected == "Settings":
+        Settings.createPage()
