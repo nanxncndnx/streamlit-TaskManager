@@ -1,11 +1,24 @@
+import os
+import sqlite3 as sql
 import streamlit as st
-import pandas as pd 
+import pandas as pd
 
-def AdminTasks():
+def AdminTasks(username):
+    #name of the Team =>
     st.title("Dopamine")
 
-    def classification(projects):
+    def createProject():
+        #data frame of the project =>
+        df = pd.DataFrame(
+            [
+                {"username" : "Null", "job" : "Null", "email" : "Null", "tasks" : "7/10", "status" : 70, "completed" : True},
+            ]
+        )
+
+    #loading Team projects as data editor =>
+    def loadingProject(projects):
         st.subheader(projects)
+
         #data frame of the project =>
         df = pd.DataFrame(
             [
@@ -57,7 +70,7 @@ def AdminTasks():
     )
 
     if projects == "classification":
-        classification(projects)
+        loadingProject(projects)
 
 def UserTasks():
     st.subheader("Hello from user")

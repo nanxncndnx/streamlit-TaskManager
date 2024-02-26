@@ -24,6 +24,12 @@ db_user = os.path.join(BASE_DIR, "User.db")
 conn = sql.connect(db_user)
 c = conn.cursor()
 
+def yaml2db(username, user_info, conn, c):
+    #extract info from Dict value =>
+    email, name, password = user_info["email"], user_info["name"], user_info["password"]
+    c.execute(f"""INSERT INTO USERS(username, email, name, password) VALUES('{username}', '{email}', '{name}', '{password}');""")
+    conn.commit()
+
 #authenticate confiuration =>
 def authentication_yaml(user_info):
     authenticator = stauth.Authenticate(
@@ -62,7 +68,7 @@ def sql_to_dict(conn, c):
 def Login(authenticator):
     authenticator.login()
     if st.session_state["authentication_status"]:
-        name = f'Welcome *{st.session_state["name"]}*'
+        name = st.session_state["name"]
         username = st.session_state["username"]
         app.createPage(name , username)
 
@@ -73,13 +79,21 @@ def Login(authenticator):
         st.warning('Please enter your username and password')
 
 #Creating a new user registration =>
-def register_user(authenticator):
+def register_user(authenticator, conn, c):
     try:
         email_of_registered_user, username_of_registered_user, name_of_registered_user = authenticator.register_user(preauthorization=False)
-        if email_of_registered_user and username_of_registered_user:
+        if email_of_registered_user:
+            #inser user info to yaml file =>
+            with open('./data/config.yaml', 'w') as file:
+                yaml.dump(config, file, default_flow_style=False)
             st.success('User registered successfully')
-            time.sleep(4)
-            Login()
+
+            #extract info from yaml format value =>
+            username = username_of_registered_user
+            for user in config['credentials'].items():
+                user_info = user[1][username]
+
+            yaml2db(username , user_info, conn, c)
     except Exception as e:
         st.error(e)
 
@@ -103,7 +117,10 @@ if selected == "Login":
 if selected == "Register":
     user_info = sql_to_dict(conn , c)
     authenticator = authentication_yaml(user_info)
-    register_user(authenticator)
+    register_user(authenticator, conn , c)
 
 if selected == "Logout":
-    authenticator.logout()
+    if st.session_state["authentication_status"]:
+        user_info = sql_to_dict(conn , c)
+        authenticator = authentication_yaml(user_info)
+        authenticator.logout()

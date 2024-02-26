@@ -1,24 +1,19 @@
-credentials:
-  usernames:
-    jsmith:
-      email: jsmith@gmail.com
-      logged_in: False # Will be managed automatically
-      name: John Smith
-      password: abc # Will be hashed automatically
-    rbriggs:
-      email: rbriggs@gmail.com
-      logged_in: False # Will be managed automatically
-      name: Rebecca Briggs
-      password: def # Will be hashed automatically
-    nanxncndnx:
-      email: machiavelli.co4@gmail.com
-      logged_in: False # Will be managed automatically
-      name: Toofan
-      password: sher221B! # Will be hashed automatically
 cookie:
   expiry_days: 30
-  key: "lkjhf" # Must be string
+  key: lkjhf
   name: Azazel
+credentials:
+  usernames:
+    nanxncndnx:
+      email: machiavelli.co4@gmail.com
+      logged_in: false
+      name: Toofan
+      password: $2b$12$6lf3jtPHF2ZVS6WCyWiCZuTZVTyPM216reC6TDTzEbyQ.bfsQ7IBK
+    skywalker:
+      email: skywalker@gmail.com
+      logged_in: false
+      name: annakin
+      password: $2b$12$Dimssvh115MJnRmuJ1vQJOHJFOMOvJ3GP/Ojn2HZKtfFHLO0gvulG
 preauthorized:
   emails:
   - melsby@gmail.com

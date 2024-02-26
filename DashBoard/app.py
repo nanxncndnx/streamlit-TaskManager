@@ -6,9 +6,20 @@ from streamlit_option_menu import option_menu
 from . import Home, assistant, Tasks, Settings
 
 def createPage(name , username):
+    #loadin data from .env and connecting database =>
+    load_dotenv()
+    BASE_DIR = os.getenv("DB_path")
+    db_user = os.path.join(BASE_DIR, "User.db")
+    conn = sql.connect(db_user)
+    c = conn.cursor()
+
     #DashBoard sidebar =>
     with st.sidebar:
-        st.header(f":orange[{name}]", divider = "rainbow")
+        #check the job and TeameName =>
+        if c.execute(f"""SELECT job , TeamName FROM USERS WHERE username = '{username}';""").fetchone() == (None, None):
+            st.warning("Please complete your account setup from settings")
+
+        st.header(f"Welcome :orange[{name}]", divider = "rainbow")
         selected = option_menu("DashBoard", ['Home', 'Tasks', 'Assistant', 'Settings'], 
             icons=['house', 'list-task', 'robot', 'gear'], default_index=1,
                 styles={
@@ -18,13 +29,6 @@ def createPage(name , username):
         "nav-link-selected": {"background-color": "orange"},
         }
     )
-        
-    #loadin and connecting database =>
-    load_dotenv()
-    BASE_DIR = os.getenv("DB_path")
-    db_user = os.path.join(BASE_DIR, "User.db")
-    conn = sql.connect(db_user)
-    c = conn.cursor()
 
     #check admin =>
     check_admin = False
@@ -39,7 +43,7 @@ def createPage(name , username):
         Home.createPage()
 
     if selected == "Tasks" and check_admin == True:
-        Tasks.AdminTasks()
+        Tasks.AdminTasks(username)
     elif selected == "Tasks" and check_admin == False:
         Tasks.UserTasks()
 
@@ -47,4 +51,6 @@ def createPage(name , username):
         assistant.createPage()
 
     if selected == "Settings":
-        Settings.createPage()
+        #extract the email address =>
+        email = c.execute(f"""SELECT email, password FROM USERS WHERE username = '{username}'; """).fetchone()
+        Settings.createPage(name, username, email[0])
