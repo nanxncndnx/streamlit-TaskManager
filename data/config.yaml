@@ -4,16 +4,21 @@ cookie:
   name: Azazel
 credentials:
   usernames:
+    kenobi:
+      email: obiWan@gmail.com
+      logged_in: false
+      name: Obi Wan
+      password: $2b$12$LZv/qHRw8EbfMZ19mI7IyuTIOZ70XuKlmgZZbB.n4zH3H4BmXHkNS
     nanxncndnx:
-      email: machiavelli.co4@gmail.com
+      email: machiavelli.co4@gmail.com@gmail.com
       logged_in: false
       name: Toofan
-      password: $2b$12$6lf3jtPHF2ZVS6WCyWiCZuTZVTyPM216reC6TDTzEbyQ.bfsQ7IBK
+      password: $2b$12$Dimssvh115MJnRmuJ1vQJOHJFOMOvJ3GP/Ojn2HZKtfFHLO0gvulG
     skywalker:
       email: skywalker@gmail.com
       logged_in: false
-      name: annakin
-      password: $2b$12$Dimssvh115MJnRmuJ1vQJOHJFOMOvJ3GP/Ojn2HZKtfFHLO0gvulG
+      name: Annakin
+      password: $2b$12$kCaEGgGMRS.CAjn2p5MP5eFGAye8aeAqiKdrjI9oo53S0QRh6k7Hy
 preauthorized:
   emails:
   - melsby@gmail.com

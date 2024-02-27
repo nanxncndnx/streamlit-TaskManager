@@ -16,7 +16,8 @@ def createPage(name , username):
     #DashBoard sidebar =>
     with st.sidebar:
         #check the job and TeameName =>
-        if c.execute(f"""SELECT job , TeamName FROM USERS WHERE username = '{username}';""").fetchone() == (None, None):
+        job_TeamName = c.execute(f"""SELECT job , TeamName FROM USERS WHERE username = '{username}';""").fetchone()
+        if  job_TeamName == (None, None):
             st.warning("Please complete your account setup from settings")
 
         st.header(f"Welcome :orange[{name}]", divider = "rainbow")
@@ -53,4 +54,4 @@ def createPage(name , username):
     if selected == "Settings":
         #extract the email address =>
         email = c.execute(f"""SELECT email, password FROM USERS WHERE username = '{username}'; """).fetchone()
-        Settings.createPage(name, username, email[0])
+        Settings.createPage(name, username, email[0], job_TeamName[0], job_TeamName[1])
