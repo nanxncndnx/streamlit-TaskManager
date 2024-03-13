@@ -24,7 +24,7 @@ c = con.cursor()
 
 #creating user table =>
 c.execute(""" CREATE TABLE IF NOT EXISTS USERS(id integer primary key AUTOINCREMENT, username TEXT VARCHAR(20) UNIQUE,
-           TeamName TEXT VARCHAR(30) UNIQUE, email TEXT VARCHAR(20) UNIQUE, name TEXT VARCHAR(30), job TEXT VARCHAR(20), password TEXT, isAdmin BOOLEAN)""")
+           TeamName TEXT VARCHAR(30), email TEXT VARCHAR(20) UNIQUE, name TEXT VARCHAR(30), job TEXT VARCHAR(20), password TEXT, isAdmin BOOLEAN)""")
 
 c.execute("""INSERT INTO USERS(username, TeamName, email, name, job, password, isAdmin) VALUES("{}", "{}", "{}", "{}", "{}", "{}", {});""".format(username, teamname, email, name, job, hash, True))
 con.commit()
@@ -32,7 +32,7 @@ con.commit()
 #creating Team table =>
 c.execute("""CREATE TABLE IF NOT EXISTS TEAMS(id integer primary key AUTOINCREMENT, TeamName TEXT VARCHAR(30), 
           purpose TEXT VARCHAR(300), username TEXT VARCHAR(20),
-          job TEXT VARCHAR(30), TASK TEXT VARCHAR(200), isDone BOOLEAN)""")
+          job TEXT VARCHAR(30), projectName TEXT VARCHAR(40), TASK TEXT VARCHAR(200), isDone BOOLEAN)""")
 
 c.execute(f"""INSERT INTO TEAMS(TeamName, purpose, username, job) VALUES('{teamname}', '{purpose}', '{username}', '{job}');""")
 con.commit()

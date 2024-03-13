@@ -28,7 +28,13 @@ def createPage(name, username, email, job, TeamName):
             UTeam = st.text_input("Team Name", value=TeamName)
             Ujob = st.selectbox(
                 "Job and your position",
-                (f"{job}", "Two", "Three")
+                #JOB TITLE =>
+                (f"{job}", "Digital Marketing Specialist", "Web Developer", "Operations Manager", "Network Engineer",
+                    "Software Tester", "UX/UI Designer", "Network Administrator", "Software Engineer", "Network Security Specialist",
+                     "UI Developer", "Data Analyst", "Systems Administrator", "Database Administrator", "IT Support Specialist",
+                      "Project Manager", "Data Engineer", "Database Developer", "Java Developer", "Front-End Engineer", "Back-End Developer",
+                       "IT Manager", "Front-End Developer", "Web Designer", "SEM Specialist", "SEO Specialist", "Data Scientist", "SEO Analyst",
+                        "Graphic Designer", "IT Administrator")
             )
 
         btn = st.button("update", type="primary", use_container_width=True)

@@ -3,9 +3,9 @@ import sqlite3 as sql
 import streamlit as st
 import pandas as pd
 
-def AdminTasks(username):
+def AdminTasks(username, job, TeamName):
     #name of the Team =>
-    st.title("Dopamine")
+    st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")
 
     def createProject():
         #data frame of the project =>
@@ -61,16 +61,34 @@ def AdminTasks(username):
             hide_index=True,
         )
 
-    #select box for choosing projects =>
-    projects = st.selectbox(
-        "please choose your project",
-        ("classification", "onlineshop"),
-        index=None,
-        placeholder="select project method ..."
-    )
+    #creating tabs for loading and creating projects =>
+    CreateProjectTab, AddingTask, StatusTab = st.tabs(["Create Project", "Adding Task", "Status"])
 
-    if projects == "classification":
-        loadingProject(projects)
+    with StatusTab:
+        #select box for choosing projects =>
+        projects = st.selectbox(
+            "please choose your project",
+            ("classification", "onlineshop"),
+            index=None,
+            placeholder="select project method ..."
+        )
 
-def UserTasks():
-    st.subheader("Hello from user")
+        if projects == "classification":
+            loadingProject(projects)
+
+    #create project and csv file for the project =>
+    with CreateProjectTab:
+        ProjectName = st.text_input("Enter The Project Name", placeholder = "HAVE TO BE UNIQE")
+        ProjectExplain = st.text_input("Project Explain", placeholder = "MyTeam is ...")
+        btnProject = st.button("Add", type="primary", use_container_width=True)
+
+        #checking inputs and adding task to list =>
+        if btnProject and ProjectExplain:
+            st.success("Project created successfully")
+
+    #Adding Tasks to the Projects by Admin =>
+    with AddingTask:
+        st.write("Hello")
+
+def UserTasks(username, job, TeamName):
+    st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")

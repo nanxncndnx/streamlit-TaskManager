@@ -44,9 +44,9 @@ def createPage(name , username):
         Home.createPage()
 
     if selected == "Tasks" and check_admin == True:
-        Tasks.AdminTasks(username)
+        Tasks.AdminTasks(username, job_TeamName[0], job_TeamName[1])
     elif selected == "Tasks" and check_admin == False:
-        Tasks.UserTasks()
+        Tasks.UserTasks(username, job_TeamName[0], job_TeamName[1])
 
     if selected == "Assistant":
         assistant.createPage()
