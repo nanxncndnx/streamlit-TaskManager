@@ -1,11 +1,22 @@
 import os
+import os.path
 import sqlite3 as sql
 import streamlit as st
 import pandas as pd
 
+from dotenv import load_dotenv
+
 def AdminTasks(username, job, TeamName):
     #name of the Team =>
     st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")
+
+    #loadin data from .env and connecting database =>
+    load_dotenv()
+    BASE_DIR = os.getenv("DB_path")
+    CSV_DIR = os.getenv("csv_path")
+    db_user = os.path.join(BASE_DIR, "User.db")
+    conn = sql.connect(db_user)
+    c = conn.cursor()
 
     def createProject(TeamName, ProjectName):
         #data frame of the project =>
@@ -15,8 +26,8 @@ def AdminTasks(username, job, TeamName):
             ]
         )
 
-        #saving dataframe as csv file =>
-        df.to_csv(f"/home/nanxncndnx/Documents/MachineLearning/TM/streamlit-TaskManager/DashBoard/csv_data/{TeamName}/{ProjectName}.csv")
+        #saving dataframe as csv file in team dir =>
+        df.to_csv(f"{CSV_DIR}/{TeamName}/{ProjectName}.csv")
         st.success("Project created successfully")
 
     #loading Team projects as data editor =>
@@ -94,7 +105,18 @@ def AdminTasks(username, job, TeamName):
 
     #Adding Tasks to the Projects by Admin =>
     with AddingTask:
-        st.write("Hello")
+        #find all projects created by this team =>
+        projects_dir = f"{CSV_DIR}/{TeamName}"
+        files = [f.split('.')[0] for f in os.listdir(projects_dir)]
+
+        #inputs and multi selectbox ... =>
+        allProjects = st.multiselect(
+            "please select projects",
+            files,
+        )
+
+        TaskInfo = st.text_input("Please Explain The Task", placeholder = "create login form with ...")
+        btnTask = st.button("Add", type="primary", use_container_width=True)
 
 def UserTasks(username, job, TeamName):
     st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")
