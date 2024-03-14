@@ -7,13 +7,17 @@ def AdminTasks(username, job, TeamName):
     #name of the Team =>
     st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")
 
-    def createProject():
+    def createProject(TeamName, ProjectName):
         #data frame of the project =>
         df = pd.DataFrame(
             [
-                {"username" : "Null", "job" : "Null", "email" : "Null", "tasks" : "7/10", "status" : 70, "completed" : True},
+                {"username" : None, "job" : None, "email" : None, "tasks" : None, "status" : None, "completed" : None},
             ]
         )
+
+        #saving dataframe as csv file =>
+        df.to_csv(f"/home/nanxncndnx/Documents/MachineLearning/TM/streamlit-TaskManager/DashBoard/csv_data/{TeamName}/{ProjectName}.csv")
+        st.success("Project created successfully")
 
     #loading Team projects as data editor =>
     def loadingProject(projects):
@@ -76,15 +80,17 @@ def AdminTasks(username, job, TeamName):
         if projects == "classification":
             loadingProject(projects)
 
-    #create project and csv file for the project =>
+    #create text input for project name =>
     with CreateProjectTab:
         ProjectName = st.text_input("Enter The Project Name", placeholder = "HAVE TO BE UNIQE")
-        ProjectExplain = st.text_input("Project Explain", placeholder = "MyTeam is ...")
-        btnProject = st.button("Add", type="primary", use_container_width=True)
+        btnProject = st.button("Create", type="primary", use_container_width=True)
 
-        #checking inputs and adding task to list =>
-        if btnProject and ProjectExplain:
-            st.success("Project created successfully")
+        #checking project name is uniqe and ... =>
+        if btnProject and ProjectName:
+            if os.path.exists(f"{ProjectName}.csv"):
+                st.error(f"{ProjectName} project is already exists in {TeamName} team projects")
+            else:
+                createProject(TeamName, ProjectName)
 
     #Adding Tasks to the Projects by Admin =>
     with AddingTask:
