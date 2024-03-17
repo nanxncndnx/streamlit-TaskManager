@@ -1,10 +1,12 @@
 import os
 import os.path
+import sys
 import sqlite3 as sql
 import streamlit as st
 import pandas as pd
 
 from dotenv import load_dotenv
+from . import Model
 
 def AdminTasks(username, job, TeamName):
     #name of the Team =>
@@ -22,7 +24,7 @@ def AdminTasks(username, job, TeamName):
         #data frame of the project =>
         df = pd.DataFrame(
             [
-                {"username" : None, "job" : None, "email" : None, "tasks" : None, "status" : None, "completed" : None},
+                {"username" : "Null", "job" : "Null", "email" : "Null", "tasks" : "Null", "status" : "Null", "completed" : "Null"},
             ]
         )
 
@@ -30,17 +32,20 @@ def AdminTasks(username, job, TeamName):
         df.to_csv(f"{CSV_DIR}/{TeamName}/{ProjectName}.csv")
         st.success("Project created successfully")
 
+    #lets add the new member to csv file of the project in team dir =>
+    def new_member_csvProject(username, job, email, TeamName, CSV_DIR, projectName):
+        df = pd.read_csv(f"{CSV_DIR}/{TeamName}/{projectName}.csv")
+        new_member = {"username" : username, "job" : job, "email" : email, "tasks" : "Null", "status" : "Null", "completed" : "Null"}
+        df.loc[len(df)] = new_member
+        df.to_csv(f"{CSV_DIR}/{TeamName}/{projectName}.csv")
+        st.success("Task added successfully")
+
     #loading Team projects as data editor =>
     def loadingProject(projects):
         st.subheader(projects)
 
-        #data frame of the project =>
-        df = pd.DataFrame(
-            [
-                {"username" : "Null", "job" : "Null", "email" : "Null", "tasks" : "7/10", "status" : 70, "completed" : True},
-                {"username" : "Null", "job" : "Null", "email" : "Null", "tasks" : "3/10", "status" : 30, "completed" : True},
-            ]
-        )
+        #connecting to the csv file of the project =>
+        df = pd.read_csv(f"{CSV_DIR}/{TeamName}/{projects}.csv")
 
         #column data of the project =>
         st.data_editor(
@@ -80,15 +85,20 @@ def AdminTasks(username, job, TeamName):
     CreateProjectTab, AddingTask, StatusTab = st.tabs(["Create Project", "Adding Task", "Status"])
 
     with StatusTab:
+        #find all projects created by this team =>
+        projects_dir = f"{CSV_DIR}/{TeamName}"
+        files = [f.split('.')[0] for f in os.listdir(projects_dir)]
+        files = tuple(files)
+
         #select box for choosing projects =>
         projects = st.selectbox(
             "please choose your project",
-            ("classification", "onlineshop"),
+            files,
             index=None,
             placeholder="select project method ..."
         )
 
-        if projects == "classification":
+        if projects != None:
             loadingProject(projects)
 
     #create text input for project name =>
@@ -117,6 +127,27 @@ def AdminTasks(username, job, TeamName):
 
         TaskInfo = st.text_input("Please Explain The Task", placeholder = "create login form with ...")
         btnTask = st.button("Add", type="primary", use_container_width=True)
+
+        #checking button and text input =>
+        if TaskInfo and btnTask:
+            with st.spinner('Wait for it...'):
+                #classification job ...
+                answer = Model.classification(TaskInfo)
+
+            #lets found who can do the task in this team =>
+            personUsername, personEmail = c.execute(f"""SELECT username, email FROM USERS WHERE job = "{answer}" AND TeamName = "{TeamName}"; """).fetchone()
+            #now we can update the teams table =>
+            for i in allProjects:
+                c.execute(f"""INSERT INTO TEAMS (TeamName, username, job, projectName, Task, isDone) VALUES("{TeamName}", "{personUsername}",
+                        "{answer}", "{i}", "{TaskInfo}", {False});""")
+                conn.commit()
+
+                #lets connect to the csv file and check the member is in the project or not ! =>
+                df_project = pd.read_csv(f"{CSV_DIR}/{TeamName}/{i}.csv")
+                if df_project.isin([personUsername]).any().any():
+                    st.success("Task added Successfully")
+                else:
+                    new_member_csvProject(personUsername, answer, personEmail, TeamName, CSV_DIR, i)
 
 def UserTasks(username, job, TeamName):
     st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")

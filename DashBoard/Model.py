@@ -1,5 +1,6 @@
 import pandas as pd 
 import numpy as np 
+import streamlit as st
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
@@ -20,12 +21,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB,MultinomialNB,BernoulliNB
 
-def classificationModel():
+def classification(Task):
     #i do not share csv files in github !!!
-    data = pd.read_csv("clean_data.csv")
+    data = pd.read_csv("/home/nanxncndnx/Documents/MachineLearning/TM/streamlit-TaskManager/DashBoard/classification/clean_data.csv")
     data['Job_Title_Id'] = data['Job Title'].factorize()[0]
 
-    data.to_csv("clean_data.csv", index = False)
+    data.to_csv("/home/nanxncndnx/Documents/MachineLearning/TM/streamlit-TaskManager/DashBoard/classification/clean_data.csv", index = False)
 
     # you can use other field like Job Description and Responsibilities and skills
     x = data['skills']
@@ -109,9 +110,7 @@ def classificationModel():
 
     classifier = LogisticRegression().fit(x_train, y_train)
 
-    value = input("PLease Explain The Task : ")
-
-    y_pred1 = cv.transform([value])
+    y_pred1 = cv.transform([Task])
     yy = classifier.predict(y_pred1)
     result = ""
 
