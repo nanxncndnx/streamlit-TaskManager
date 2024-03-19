@@ -13,10 +13,13 @@ def createPage(name , username):
     conn = sql.connect(db_user)
     c = conn.cursor()
 
+    #extract the email address =>
+    email = c.execute(f"""SELECT email, password FROM USERS WHERE username = '{username}'; """).fetchone()
+    job_TeamName = c.execute(f"""SELECT job , TeamName FROM USERS WHERE username = '{username}';""").fetchone()
+
     #DashBoard sidebar =>
     with st.sidebar:
         #check the job and TeameName =>
-        job_TeamName = c.execute(f"""SELECT job , TeamName FROM USERS WHERE username = '{username}';""").fetchone()
         if  job_TeamName == (None, None):
             st.warning("Please complete your account setup from settings")
 
@@ -44,7 +47,7 @@ def createPage(name , username):
         Home.createPage()
 
     if selected == "Tasks" and check_admin == True:
-        Tasks.AdminTasks(username, job_TeamName[0], job_TeamName[1])
+        Tasks.AdminTasks(username, job_TeamName[0], job_TeamName[1], email[0])
     elif selected == "Tasks" and check_admin == False:
         Tasks.UserTasks(username, job_TeamName[0], job_TeamName[1])
 
@@ -52,6 +55,4 @@ def createPage(name , username):
         assistant.createPage()
 
     if selected == "Settings":
-        #extract the email address =>
-        email = c.execute(f"""SELECT email, password FROM USERS WHERE username = '{username}'; """).fetchone()
         Settings.createPage(name, username, email[0], job_TeamName[0], job_TeamName[1])

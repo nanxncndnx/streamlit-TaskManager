@@ -8,7 +8,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from . import Model
 
-def AdminTasks(username, job, TeamName):
+def AdminTasks(username, job, TeamName, email):
     #name of the Team =>
     st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")
 
@@ -20,11 +20,11 @@ def AdminTasks(username, job, TeamName):
     conn = sql.connect(db_user)
     c = conn.cursor()
 
-    def createProject(TeamName, ProjectName):
+    def createProject(username, job, email, TeamName, ProjectName, ProjectInfo):
         #data frame of the project =>
         df = pd.DataFrame(
             [
-                {"username" : "Null", "job" : "Null", "email" : "Null", "tasks" : "Null", "status" : "Null", "completed" : "Null"},
+                {"username" : username, "job" : job, "email" : email, "tasks" : ProjectInfo, "status" : 0, "completed" : False},
             ]
         )
 
@@ -35,7 +35,7 @@ def AdminTasks(username, job, TeamName):
     #lets add the new member to csv file of the project in team dir =>
     def new_member_csvProject(username, job, email, TeamName, CSV_DIR, projectName):
         df = pd.read_csv(f"{CSV_DIR}/{TeamName}/{projectName}.csv")
-        new_member = {"username" : username, "job" : job, "email" : email, "tasks" : "Null", "status" : "Null", "completed" : "Null"}
+        new_member = {"username" : username, "job" : job, "email" : email, "tasks" : f"{0}/{1}", "status" : 0, "completed" : False}
         df.loc[len(df)] = new_member
         df.to_csv(f"{CSV_DIR}/{TeamName}/{projectName}.csv")
         st.success("Task added successfully")
@@ -104,14 +104,15 @@ def AdminTasks(username, job, TeamName):
     #create text input for project name =>
     with CreateProjectTab:
         ProjectName = st.text_input("Enter The Project Name", placeholder = "HAVE TO BE UNIQE")
+        ProjectInfo = st.text_input("Please explain about the project" , placeholder = "What is your goals for this project and ...")
         btnProject = st.button("Create", type="primary", use_container_width=True)
 
         #checking project name is uniqe and ... =>
-        if btnProject and ProjectName:
+        if btnProject and ProjectName and ProjectInfo:
             if os.path.exists(f"{ProjectName}.csv"):
                 st.error(f"{ProjectName} project is already exists in {TeamName} team projects")
             else:
-                createProject(TeamName, ProjectName)
+                createProject(username, job, email, TeamName, ProjectName, ProjectInfo)
 
     #Adding Tasks to the Projects by Admin =>
     with AddingTask:
@@ -138,16 +139,32 @@ def AdminTasks(username, job, TeamName):
             personUsername, personEmail = c.execute(f"""SELECT username, email FROM USERS WHERE job = "{answer}" AND TeamName = "{TeamName}"; """).fetchone()
             #now we can update the teams table =>
             for i in allProjects:
-                c.execute(f"""INSERT INTO TEAMS (TeamName, username, job, projectName, Task, isDone) VALUES("{TeamName}", "{personUsername}",
-                        "{answer}", "{i}", "{TaskInfo}", {False});""")
-                conn.commit()
-
-                #lets connect to the csv file and check the member is in the project or not ! =>
-                df_project = pd.read_csv(f"{CSV_DIR}/{TeamName}/{i}.csv")
-                if df_project.isin([personUsername]).any().any():
-                    st.success("Task added Successfully")
+                #we dont want same tasks in each project then we should controll them =>
+                #please fix this part this take so much time finde better solution !!!!!
+                if c.execute(f""" SELECT * FROM TEAMS WHERE username = "{personUsername}" AND projectName = "{i}" AND TASK = "{TaskInfo}"; """).fetchone() != None:
+                    st.error("we have same task in this project!")
                 else:
-                    new_member_csvProject(personUsername, answer, personEmail, TeamName, CSV_DIR, i)
+                    c.execute(f"""INSERT INTO TEAMS (TeamName, username, job, projectName, Task, isDone) VALUES("{TeamName}", "{personUsername}",
+                            "{answer}", "{i}", "{TaskInfo}", {False});""")
+                    conn.commit()
+
+                    #lets connect to the csv file and check the member is in the project or not ! =>
+                    df_project = pd.read_csv(f"{CSV_DIR}/{TeamName}/{i}.csv")
+                    if df_project.isin([personUsername]).any().any():
+                        #updating task and status cell from csv file =>
+                        counting_tasks = len(c.execute(f"""SELECT * FROM TEAMS WHERE username = "{personUsername}" AND projectName = "{i}"; """).fetchall())
+                        counting_isDone = len(c.execute(f"""SELECT * FROM TEAMS WHERE username = "{personUsername}" AND projectName = "{i}" AND isDone = {True}; """).fetchall())
+
+                        updated = df_project["username"] == personUsername
+                        df_project.loc[updated, "tasks"] = f"{counting_isDone}/{counting_tasks}"
+
+                        #calculating status =>
+                        percent = counting_isDone / counting_tasks * 100
+                        df_project.loc[updated, "status"] = percent
+                        df_project.to_csv(f"{CSV_DIR}/{TeamName}/{i}.csv")
+                        st.success("Task added Successfully")
+                    else:
+                        new_member_csvProject(personUsername, answer, personEmail, TeamName, CSV_DIR, i)
 
 def UserTasks(username, job, TeamName):
     st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")
