@@ -24,8 +24,8 @@ def createPage(name , username):
             st.warning("Please complete your account setup from settings")
 
         st.header(f"Welcome :orange[{name}]", divider = "rainbow")
-        selected = option_menu("DashBoard", ['Home', 'Tasks', 'Assistant', 'Settings'], 
-            icons=['house', 'list-task', 'robot', 'gear'], default_index=1,
+        selected = option_menu("DashBoard", ['Home', 'Tasks', 'Teams', 'Settings'], 
+            icons=['house', 'list-task', 'microsoft-teams', 'gear'], default_index=1,
                 styles={
         "container": {"padding": "0!important", "background-color": "lightgray", "border-radius" : "10px"},
         "icon": {"color": "white", "font-size": "20px"}, 
@@ -51,7 +51,7 @@ def createPage(name , username):
     elif selected == "Tasks" and check_admin == False:
         Tasks.UserTasks(username, job_TeamName[0], job_TeamName[1])
 
-    if selected == "Assistant":
+    if selected == "Teams":
         assistant.createPage()
 
     if selected == "Settings":
