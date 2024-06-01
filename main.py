@@ -81,7 +81,7 @@ def Login(authenticator):
 #Creating a new user registration =>
 def register_user(authenticator, conn, c):
     try:
-        email_of_registered_user, username_of_registered_user, name_of_registered_user = authenticator.register_user(preauthorization=False)
+        email_of_registered_user, username_of_registered_user, name_of_registered_user = authenticator.register_user(pre_authorization=False)
         if email_of_registered_user:
             #inser user info to yaml file =>
             with open('./data/config.yaml', 'w') as file:
