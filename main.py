@@ -102,7 +102,7 @@ selected = option_menu(None, ["Register", "Login", "Logout"],
     icons=['person-fill-add', 'person-fill-check', 'person-fill-dash'], 
     default_index=0, orientation="horizontal",
     styles={
-    "container": {"padding": "0!important", "background-color": "lightgray", "border-radius" : "15px"},
+    "container": {"padding": "0!important", "background-color": "#0F161E", "border-radius" : "15px"},
     "icon": {"color": "white", "font-size": "15px"}, 
     "nav-link": {"font-size": "15px", "text-align": "left", "margin":"0px", "--hover-color": "#eee", "border-radius" : "20px"},
     "nav-link-selected": {"background-color": "orange"},

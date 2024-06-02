@@ -3,7 +3,7 @@ import sqlite3 as sql
 from dotenv import load_dotenv
 import streamlit as st
 from streamlit_option_menu import option_menu
-from . import Home, assistant, Tasks, Settings
+from . import Home, Teams, Tasks, Settings
 
 def createPage(name , username):
     #loadin data from .env and connecting database =>
@@ -27,7 +27,7 @@ def createPage(name , username):
         selected = option_menu("DashBoard", ['Home', 'Tasks', 'Teams', 'Settings'], 
             icons=['house', 'list-task', 'microsoft-teams', 'gear'], default_index=1,
                 styles={
-        "container": {"padding": "0!important", "background-color": "lightgray", "border-radius" : "10px"},
+        "container": {"padding": "0!important", "background-color": "#0F161E", "border-radius" : "10px"},
         "icon": {"color": "white", "font-size": "20px"}, 
         "nav-link": {"font-size": "20px", "text-align": "left", "margin":"5px", "--hover-color": "#eee", "border-radius" : "10px"},
         "nav-link-selected": {"background-color": "orange"},
@@ -52,7 +52,7 @@ def createPage(name , username):
         Tasks.UserTasks(username, job_TeamName[0], job_TeamName[1])
 
     if selected == "Teams":
-        assistant.createPage()
+        Teams.createPage(job_TeamName[0], job_TeamName[1])
 
     if selected == "Settings":
         Settings.createPage(name, username, email[0], job_TeamName[0], job_TeamName[1])
