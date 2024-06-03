@@ -1,11 +1,32 @@
+import os
+import base64
+import sqlite3 as sql
 import streamlit as st
-from code_editor import code_editor
 
+from dotenv import load_dotenv
 
 def createPage(job, TeamName):
     st.subheader(f":orange[{TeamName}] \n Position : :orange[{job}]", divider = "rainbow")
 
-    Jobs, Information, Apply, Testing  = st.tabs(["Jobs", "Job Description", "Apply", "Testing"])
+    #loadin data from .env and connecting database =>
+    load_dotenv()
+    BASE_DIR = os.getenv("DB_path")
+    db_user = os.path.join(BASE_DIR, "User.db")
+    conn = sql.connect(db_user)
+    c = conn.cursor()
+
+    #unfortunately i cant find better way but in streamlit we have a problem with buttons because after every text_input code will run by default and we will lost our button value =>
+    if 'count' not in st.session_state:
+        st.session_state.count = 0
+
+    def F1_button():
+        st.session_state.count = 1
+
+    def F2_button():
+        st.session_state.count = 2
+    #i decided to write a function to save values with session state in this part and call function with on_click in buttons
+
+    Jobs, Information, Apply = st.tabs(["Jobs", "Job Description", "Apply"])
     # i dont want to take it hard ==! we gonna use samples for just Two teams ==>
     with Jobs:
         with st.form("F1"):
@@ -14,9 +35,9 @@ def createPage(job, TeamName):
             header[0].subheader("Data Scientist")
             header[1].subheader(":red[Full Time]")
             header[2].subheader(":red[Tehran]")
-            Teambtn1 = st.form_submit_button('More Info', type="primary", use_container_width=True)
+            Teambtn1 = st.form_submit_button('More Info', type="primary", use_container_width=True, on_click=F1_button)
 
-            if Teambtn1:
+            if st.session_state.count == 1:
                 st.success("Okay now you can see job information in the Job Description tabs and Apply and do your Test")
                 with Information:
                     title = st.columns([2,2,1])
@@ -46,7 +67,7 @@ def createPage(job, TeamName):
 
                     input2 = st.columns([2,2])
                     Email = input2[0].text_input("Email")
-                    PhoneNumber = input2[1].text_input("Phone Number")
+                    PhoneNumber = input2[1].number_input("Phone Number")
 
                     cover_letter = st.text_area(
                         "Cover Letter",
@@ -56,15 +77,22 @@ def createPage(job, TeamName):
                     resume = st.file_uploader("Resume", type="pdf")
                     submit = st.button("Submit", type="primary", use_container_width=True)
 
+                    if submit:
+                        blob = base64.b64encode(resume.read())
+                        c.execute(f"""INSERT INTO OFFERS(TeamName, FirstName, LastName, PhoneNumber, Email, Resume, CoverLetter, Accepted)
+                                   VALUES ("1027", "{first_name}", "{last_name}", "{PhoneNumber}", "{Email}", "{blob}", "{cover_letter}", {False});""")
+                        conn.commit()
+                        st.success("Request sent successfully")
+
         with st.form("F2"):
             st.title(":orange[Sonic]")
             header = st.columns([2,2,1])
             header[0].subheader("Software Engineer")
             header[1].subheader(":red[Full Time]")
             header[2].subheader(":red[Tehran]")
-            Teambtn2 = st.form_submit_button('More Info', type="primary", use_container_width=True)
+            Teambtn2 = st.form_submit_button('More Info', type="primary", use_container_width=True, on_click=F2_button)
 
-            if Teambtn2:
+            if st.session_state.count == 2:
                 st.success("Okay now you can see job information in the Job Description tabs and Apply and do your Test")
                 with Information:
                     title = st.columns([2,1,1])
@@ -103,3 +131,10 @@ def createPage(job, TeamName):
 
                     resume = st.file_uploader("Resume", type="pdf")
                     submit = st.button("Submit", type="primary", use_container_width=True)
+
+                    if submit:
+                        blob = base64.b64encode(resume.read())
+                        c.execute(f"""INSERT INTO OFFERS(TeamName, FirstName, LastName, PhoneNumber, Email, Resume, CoverLetter, Accepted)
+                                   VALUES ("Sonic", "{first_name}", "{last_name}", "{PhoneNumber}", "{Email}", "{blob}", "{cover_letter}", {False});""")
+                        c.commit()
+                        st.success("Request sent successfully")

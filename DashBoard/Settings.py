@@ -14,7 +14,7 @@ def createPage(name, username, email, job, TeamName):
     c = conn.cursor()
 
     #creating tabs for Admin setup and user setup =>
-    userTab , adminTab = st.tabs(["User Setup", "Admin Setup"])
+    userTab , adminTab = st.tabs(["User Setup", "More"])
 
     with userTab:
         col1, col2 = st.columns(2)

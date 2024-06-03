@@ -21,7 +21,7 @@ def createPage(name , username):
     with st.sidebar:
         #check the job and TeameName =>
         if  job_TeamName == (None, None):
-            st.warning("Please complete your account setup from settings")
+            st.warning("Please complete your account setup from settings and find your team from Teams")
 
         st.header(f"Welcome :orange[{name}]", divider = "rainbow")
         selected = option_menu("DashBoard", ['Home', 'Tasks', 'Teams', 'Settings'], 
