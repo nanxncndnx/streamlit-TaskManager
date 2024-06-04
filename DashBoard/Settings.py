@@ -109,10 +109,13 @@ def createPage(name, username, email, job, TeamName):
     elif job == "admin":
         def create_form(username, CoverLetter, n, m):
             with st.form(f"F{n}"):
-                header = st.columns([2,2,2])
+                header = st.columns([2,2])
                 header[0].subheader(f"{username}")
-                header[1].form_submit_button('Accept', type="primary", use_container_width=True)
-                header[2].form_submit_button('Reject', type="primary", use_container_width=True)
+                Accept = header[1].form_submit_button('Accept', type="primary", use_container_width=True)
+
+                if Accept:
+                    c.execute(f"""UPDATE OFFERS SET Accepted = {True} WHERE username = "{username}";""")
+                    conn.commit()
 
             with open(f"resume{n}.pdf", "rb") as pdf_file:
                 PDFbyte = pdf_file.read()
@@ -120,7 +123,7 @@ def createPage(name, username, email, job, TeamName):
             Downloads = st.columns([2,2])
             Downloads[0].download_button("Cover Letter", CoverLetter, type="primary", file_name="CoverLetter.txt", use_container_width=True, key={n})
             Downloads[1].download_button("Resume", data=PDFbyte, file_name="resume.pdf", type="primary" ,use_container_width=True, key={m})
-            st.subheader("", divider="orange")
+            st.subheader("", divider="green")
             
         with offers:
             CoverLetter = c.execute(f"""SELECT username, CoverLetter FROM OFFERS WHERE TeamName = '{TeamName}';""").fetchall()

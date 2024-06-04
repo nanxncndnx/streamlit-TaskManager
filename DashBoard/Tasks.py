@@ -47,39 +47,37 @@ def AdminTasks(username, job, TeamName, email):
         #connecting to the csv file of the project =>
         df = pd.read_csv(f"{CSV_DIR}/{TeamName}/{projects}.csv")
 
-        #column data of the project =>
-        st.data_editor(
-            df,
-            column_config={
-                "usernames" : st.column_config.TextColumn(
-                    "usernames",
-                    max_chars=30,
-                ),
-                "job" : st.column_config.TextColumn( 
-                    "job",
-                    max_chars=20,
-                ),
-                "email" : st.column_config.TextColumn(
-                    "email",
-                    max_chars=30,
-                ),
-                "tasks" : st.column_config.SelectboxColumn(
-                    "tasks",
-                ),
-                "status" : st.column_config.ProgressColumn(
-                    "status",
-                    min_value = 0,
-                    max_value = 100,
-                ),
-                "completed" : st.column_config.CheckboxColumn(
-                    "completed",
-                    default=False,
-                )
-            },
+        #extracting username of the all members in team=>
+        All_members = c.execute(f"""SELECT DISTINCT username FROM TEAMS WHERE projectName = "{projects}"; """).fetchall()
+        
+        #updating member tasks in csv project file from sql=>
+        for name in All_members:
+            counting_tasks_user = len(c.execute(f"""SELECT * FROM TEAMS WHERE projectName = "{projects}" AND username = "{name[0]}"; """).fetchall())
+            counting_isDone_user = len(c.execute(f"""SELECT * FROM TEAMS WHERE projectName = "{projects}" AND isDone = {True} AND username = "{name[0]}" ; """).fetchall())
+            
+            #now we gonna update Task memebers and status memebers
+            updated_user = df["username"] == name[0]
+            df.loc[updated_user, "tasks"] = f"{counting_isDone_user}/{counting_tasks_user}"
 
-            disabled=["tasks"],
-            hide_index=True,
-        )
+            #calculating status =>
+            percent = counting_isDone_user / counting_tasks_user * 100
+            df.loc[updated_user, "status"] = percent
+            df.to_csv(f"{CSV_DIR}/{TeamName}/{projects}.csv")
+
+        #updating total tasks in csv project file from sql=>
+        counting_tasks = len(c.execute(f"""SELECT * FROM TEAMS WHERE projectName = "{projects}"; """).fetchall())
+        counting_isDone = len(c.execute(f"""SELECT * FROM TEAMS WHERE projectName = "{projects}" AND isDone = {True}; """).fetchall())
+
+        updated_total = df["username"] == username
+        df.loc[updated_total, "tasks"] = f"{counting_isDone}/{counting_tasks}"
+
+        #calculating status =>
+        percent = counting_isDone / counting_tasks * 100
+        df.loc[updated_total, "status"] = percent
+        df.to_csv(f"{CSV_DIR}/{TeamName}/{projects}.csv")
+
+        #column data of the project =>
+        st.data_editor(df[["username", "job", "email", "tasks", "status", "completed"]])
 
     #creating tabs for loading and creating projects =>
     CreateProjectTab, AddingTask, StatusTab = st.tabs(["Create Project", "Adding Task", "Status"])
@@ -134,9 +132,15 @@ def AdminTasks(username, job, TeamName, email):
             with st.spinner('Wait for it...'):
                 #classification job ...
                 answer = Model.classification(TaskInfo)
+                st.write(answer)
 
             #lets found who can do the task in this team =>
-            personUsername, personEmail = c.execute(f"""SELECT username, email FROM USERS WHERE job = "{answer}" AND TeamName = "{TeamName}"; """).fetchone()
+            try:
+                personUsername, personEmail = c.execute(f"""SELECT username, email FROM USERS WHERE job = "{answer}" AND TeamName = "{TeamName}"; """).fetchone()
+            except:
+                st.error(f"No one can do this task in your team you need a {answer}")
+                st.stop()
+
             #now we can update the teams table =>
             for i in allProjects:
                 #we dont want same tasks in each project then we should controll them =>
@@ -168,3 +172,30 @@ def AdminTasks(username, job, TeamName, email):
 
 def UserTasks(username, job, TeamName):
     st.subheader(f":orange[{TeamName}] \nPosition : :orange[{job}]", divider = "rainbow")
+
+    #loadin data from .env and connecting database =>
+    load_dotenv()
+    BASE_DIR = os.getenv("DB_path")
+    CSV_DIR = os.getenv("csv_path")
+    db_user = os.path.join(BASE_DIR, "User.db")
+    conn = sql.connect(db_user)
+    c = conn.cursor()
+
+    try:
+        df = pd.read_sql(f"""SELECT projectName, TASK, isDone FROM TEAMS WHERE username = "{username}"; """, conn)
+        edited_df = st.data_editor(df)
+
+        isDone = edited_df["isDone"]
+        projectName = edited_df["projectName"]
+        Task = edited_df["TASK"]
+
+        if isDone[0] == 0:
+            c.execute(f"""UPDATE TEAMS SET isDone = {False} WHERE username = "{username}" AND projectName = "{projectName[0]}" AND TASK = "{Task[0]}";""")
+            conn.commit()
+            st.success("status changed successfuly to False")
+        elif isDone[0] == 1:
+            c.execute(f"""UPDATE TEAMS SET isDone = {True} WHERE username = "{username}" AND projectName = "{projectName[0]}" AND TASK = "{Task[0]}";""")
+            conn.commit()
+            st.success("status changed successfuly to True")
+    except:
+        pass
