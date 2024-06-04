@@ -39,5 +39,5 @@ con.commit()
 
 #creating Offers table =>
 #i will store pdf files in blob column!
-c.execute("""CREATE TABLE IF NOT EXISTS OFFERS(id integer primary key AUTOINCREMENT, TeamName TEXT VARCHAR(30), FirstName TEXT VARCHAR(30),
+c.execute("""CREATE TABLE IF NOT EXISTS OFFERS(id integer primary key AUTOINCREMENT, TeamName TEXT VARCHAR(30), username TEXT, FirstName TEXT VARCHAR(30),
           LastName TEXT VARCHAR(30), PhoneNumber TEXT, Email TEXT VARCHAR(100), Resume BLOB, CoverLetter TEXT VARCHAR(1000), Accepted BOOLEAN)""")

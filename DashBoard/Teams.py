@@ -5,7 +5,7 @@ import streamlit as st
 
 from dotenv import load_dotenv
 
-def createPage(job, TeamName):
+def createPage(username, job, TeamName):
     st.subheader(f":orange[{TeamName}] \n Position : :orange[{job}]", divider = "rainbow")
 
     #loadin data from .env and connecting database =>
@@ -67,7 +67,7 @@ def createPage(job, TeamName):
 
                     input2 = st.columns([2,2])
                     Email = input2[0].text_input("Email")
-                    PhoneNumber = input2[1].number_input("Phone Number")
+                    PhoneNumber = input2[1].text_input("Phone Number")
 
                     cover_letter = st.text_area(
                         "Cover Letter",
@@ -79,8 +79,15 @@ def createPage(job, TeamName):
 
                     if submit:
                         blob = base64.b64encode(resume.read())
-                        c.execute(f"""INSERT INTO OFFERS(TeamName, FirstName, LastName, PhoneNumber, Email, Resume, CoverLetter, Accepted)
-                                   VALUES ("1027", "{first_name}", "{last_name}", "{PhoneNumber}", "{Email}", "{blob}", "{cover_letter}", {False});""")
+                        text_file = open('test_blob.txt', "wb")
+                        text_file.write(blob)
+                        text_file.close()
+
+                        with open('test_blob.txt', 'r') as f:
+                            blob = f.read()
+                            
+                        c.execute(f"""INSERT INTO OFFERS(username, TeamName, FirstName, LastName, PhoneNumber, Email, Resume, CoverLetter, Accepted)
+                                   VALUES ("{username}", "1027", "{first_name}", "{last_name}", "{PhoneNumber}", "{Email}", "{blob}", "{cover_letter}", {False});""")
                         conn.commit()
                         st.success("Request sent successfully")
 
@@ -134,7 +141,7 @@ def createPage(job, TeamName):
 
                     if submit:
                         blob = base64.b64encode(resume.read())
-                        c.execute(f"""INSERT INTO OFFERS(TeamName, FirstName, LastName, PhoneNumber, Email, Resume, CoverLetter, Accepted)
-                                   VALUES ("Sonic", "{first_name}", "{last_name}", "{PhoneNumber}", "{Email}", "{blob}", "{cover_letter}", {False});""")
+                        c.execute(f"""INSERT INTO OFFERS(username, TeamName, FirstName, LastName, PhoneNumber, Email, Resume, CoverLetter, Accepted)
+                                   VALUES ("{username}", "Sonic", "{first_name}", "{last_name}", "{PhoneNumber}", "{Email}", "{blob}", "{cover_letter}", {False});""")
                         c.commit()
                         st.success("Request sent successfully")

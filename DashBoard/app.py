@@ -52,7 +52,7 @@ def createPage(name , username):
         Tasks.UserTasks(username, job_TeamName[0], job_TeamName[1])
 
     if selected == "Teams":
-        Teams.createPage(job_TeamName[0], job_TeamName[1])
+        Teams.createPage(username, job_TeamName[0], job_TeamName[1])
 
     if selected == "Settings":
         Settings.createPage(name, username, email[0], job_TeamName[0], job_TeamName[1])

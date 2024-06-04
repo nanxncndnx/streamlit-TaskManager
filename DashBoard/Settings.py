@@ -1,6 +1,9 @@
 import os
 import streamlit as st
+import pandas as pd
 import sqlite3 as sql
+import base64
+
 from dotenv import load_dotenv
 
 def createPage(name, username, email, job, TeamName):
@@ -14,7 +17,7 @@ def createPage(name, username, email, job, TeamName):
     c = conn.cursor()
 
     #creating tabs for Admin setup and user setup =>
-    userTab , adminTab = st.tabs(["User Setup", "More"])
+    userTab , adminTab, offers = st.tabs(["User Setup", "More", "Offers"])
 
     with userTab:
         col1, col2 = st.columns(2)
@@ -92,3 +95,47 @@ def createPage(name, username, email, job, TeamName):
         
         elif job == "admin":
             st.subheader("Hello boss")
+
+    if job != "admin":
+        with offers:
+            Information = c.execute(f"""SELECT FirstName, LastName, PhoneNumber, TeamName, Email, Accepted From OFFERS WHERE username = '{username}';""").fetchall()
+            column_names = [description[0] for description in c.description]
+            data = []
+            for row in Information:
+                data.append(dict(zip(column_names, row)))
+
+            st.table(data)
+    
+    elif job == "admin":
+        def create_form(username, CoverLetter, n, m):
+            with st.form(f"F{n}"):
+                header = st.columns([2,2,2])
+                header[0].subheader(f"{username}")
+                header[1].form_submit_button('Accept', type="primary", use_container_width=True)
+                header[2].form_submit_button('Reject', type="primary", use_container_width=True)
+
+            with open(f"resume{n}.pdf", "rb") as pdf_file:
+                PDFbyte = pdf_file.read()
+
+            Downloads = st.columns([2,2])
+            Downloads[0].download_button("Cover Letter", CoverLetter, type="primary", file_name="CoverLetter.txt", use_container_width=True, key={n})
+            Downloads[1].download_button("Resume", data=PDFbyte, file_name="resume.pdf", type="primary" ,use_container_width=True, key={m})
+            st.subheader("", divider="orange")
+            
+        with offers:
+            CoverLetter = c.execute(f"""SELECT username, CoverLetter FROM OFFERS WHERE TeamName = '{TeamName}';""").fetchall()
+            n = 0
+            m = 100
+            for row in CoverLetter:
+                n += 1
+                m -= 1
+                Resume = c.execute(f"""SELECT Resume FROM OFFERS WHERE TeamName = '{TeamName}' AND username = '{row[0]}';""").fetchone()
+
+                print(Resume[0])
+
+                blob = base64.b64decode(Resume[0])
+                text_file = open(f"resume{n}.pdf",'wb')
+                text_file.write(blob)
+                text_file.close()
+
+                create_form(row[0], row[1], n, m)
