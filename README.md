@@ -12,5 +12,5 @@ in this project :
 <details>
 
 <summary>Job Classification</summary>
-**scikit-learn**
+**NumPy**, **scikit-learn**
 </details>
