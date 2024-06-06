@@ -7,7 +7,6 @@
  - you can generate the coverletter by ai using LLM
  - you can Add a task and My NLP classification will finde the best member can do the task in your team and just pass the task to that member automatically!
 
-
 ## 1. Job Classification
 #### First of all i decided to just remove extra **Columns** because for example we dont need something like **Benefits** And Also i remove extra jobs like **Teacher** , **Wedding Planner** & ...
 
