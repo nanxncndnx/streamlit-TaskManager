@@ -9,9 +9,9 @@
 ```
 
 ## Job Classification
-### First of all i decided to just remove extra **Columns** because for example we dont need something like **Benefits** And Also i remove extra jobs like **Teacher** , **Wedding Planner** & ...
+#### First of all i decided to just remove extra **Columns** because for example we dont need something like **Benefits** And Also i remove extra jobs like **Teacher** , **Wedding Planner** & ...
 
-#### Next Part : 
+##### Next Part : 
 ``` 
  . Removing Tags
  . Remove Special Characters
@@ -19,7 +19,7 @@
  . Remove all Stopwords
  . Lemmatizing the Words
 ```
-### To Classify the Jobs by Text i decided to use LogisticRegression model **you can see the full code [here](./DashBoard/Model.py)**
+#### To Classify the Jobs by Text i decided to use LogisticRegression model **you can see the full code [here](./DashBoard/Model.py)**
 
 
 <p align="center" width="100%">
@@ -33,13 +33,13 @@
 
 ## Cover Letter Generator
 
-#### LLaMa 2.0
+##### LLaMa 2.0
 - The heart of our Cover Letter Generator is the Llama 2 language model. It is Meta’s open source large language model.
 - Replicate platform providing access to LLMs
 
 ## Streamlit
 
-#### Parts
+##### Parts :
 ``` 
  . Authentication
  . Permissions
@@ -51,28 +51,32 @@
 ```
 
 <p align="center" width="100%">
+ <br>
+ <br>
  <img width="28%" src="image/status.png">
  <img width="30%" src="image/Tasks.png">
  <img width="30%" src="image/Offers.png">
+ <br>
+ <br>
 </p>
 
 ## Usage
 
-#### cleaning dataset **[code](./DashBoard/classification/clean.py)** 
+##### cleaning dataset **[code](./DashBoard/classification/clean.py)** 
 ```zsh
 cd DashBoard/classification/
 python3 clean.py
 ```
 
-#### creating database manually with **Python & Sqlite3 [code](./data/create_data.py)** 
+##### creating database manually with **Python & Sqlite3 [code](./data/create_data.py)** 
 ```zsh
 streamlit run main.py
 ```
 
-#### main **[code](./main.py)**
+##### main **[code](./main.py)**
 ```zsh
 streamlit run main.py
 ```
 
 ## Technology Used
-**Streamlit, Pandas, Numpy, scikit-learn, matplotlib, Llama 2, replicate, nltk, NLP, SQL**
+##### **Streamlit, Pandas, Numpy, scikit-learn, matplotlib, Llama 2, replicate, nltk, NLP, SQL**
