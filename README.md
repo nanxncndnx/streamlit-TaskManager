@@ -39,15 +39,14 @@
 ## 3. Streamlit
 
 ##### Parts :
-``` 
- . Authentication
- . Permissions
- . Applying to Teams
- . Offers
- . Adding Tasks & Creating Projects
- . Status of The Tasks in each Projects
- . Changing status of the Tasks by Members
-```
+ 
+ - Authentication
+ - Permissions
+ - Applying to Teams
+ - Offers
+ - Adding Tasks & Creating Projects
+ - Status of The Tasks in each Projects
+ - Changing status of the Tasks by Members
 
 <p align="center" width="100%">
  <br>
