@@ -1,24 +1,24 @@
 # streamlit-TaskManager
 #### in this project :
-```
- . you can create your account
- . you can creat team
- . you can apply for teams
- . you can generate the coverletter by ai using LLM
- . you can Add a task and My NLP classification will finde the best member can do the task in your team and just pass the task to that member automatically!
-```
 
-## Job Classification
+ - you can create your account
+ - you can creat team
+ - you can apply for teams
+ - you can generate the coverletter by ai using LLM
+ - you can Add a task and My NLP classification will finde the best member can do the task in your team and just pass the task to that member automatically!
+
+
+## 1. Job Classification
 #### First of all i decided to just remove extra **Columns** because for example we dont need something like **Benefits** And Also i remove extra jobs like **Teacher** , **Wedding Planner** & ...
 
 ##### Next Part : 
-``` 
- . Removing Tags
- . Remove Special Characters
- . Convert Everything in Lower Case
- . Remove all Stopwords
- . Lemmatizing the Words
-```
+
+ - Removing Tags
+ - Remove Special Characters
+ - Convert Everything in Lower Case
+ - Remove all Stopwords
+ - Lemmatizing the Words
+
 #### To Classify the Jobs by Text i decided to use LogisticRegression model **you can see the full code [here](./DashBoard/Model.py)**
 
 
@@ -31,13 +31,13 @@
  <br>
 </p>
 
-## Cover Letter Generator
+## 2. Cover Letter Generator
 
 ##### LLaMa 2.0
 - The heart of our Cover Letter Generator is the Llama 2 language model. It is Meta’s open source large language model.
 - Replicate platform providing access to LLMs
 
-## Streamlit
+## 3. Streamlit
 
 ##### Parts :
 ``` 
@@ -53,9 +53,9 @@
 <p align="center" width="100%">
  <br>
  <br>
- <img width="28%" src="image/status.png">
- <img width="30%" src="image/Tasks.png">
- <img width="30%" src="image/Offers.png">
+ <img width="31%" src="image/status.png">
+ <img width="33%" src="image/Tasks.png">
+ <img width="33%" src="image/Offers.png">
  <br>
  <br>
 </p>
@@ -70,7 +70,8 @@ python3 clean.py
 
 ##### creating database manually with **Python & Sqlite3 [code](./data/create_data.py)** 
 ```zsh
-streamlit run main.py
+cd data
+python3 create_data.py
 ```
 
 ##### main **[code](./main.py)**
