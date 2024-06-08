@@ -5,10 +5,10 @@
  - you can creat team
  - you can apply for teams
  - you can generate the coverletter by ai using LLM
- - you can Add a task and My NLP classification will finde the best member can do the task in your team and just pass the task to that member automatically!
+ - you can Add a task and My NLP classification will find the best member in your team who can do the task and automatically pass the task to that member
 
 ## 1. Job Classification
-#### First of all i decided to just remove extra **Columns** because for example we dont need something like **Benefits** And Also i remove extra jobs like **Teacher** , **Wedding Planner** & ...
+#### First of all i decided to just remove extra **Columns** because for example we dont need things like **Benefits** i Also remove extra jobs like **Teacher** , **Wedding Planner**, and others.
 
 ##### Next Part : 
 
@@ -17,6 +17,8 @@
  - Convert Everything in Lower Case
  - Remove all Stopwords
  - Lemmatizing the Words
+
+The Dataset file has been transferred from **1.7GB** to **214.5MB**
 
 #### To Classify the Jobs by Text i decided to use LogisticRegression model **you can see the full code [here](./DashBoard/Model.py)**
 
