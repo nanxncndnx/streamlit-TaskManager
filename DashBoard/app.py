@@ -27,9 +27,9 @@ def createPage(name , username):
         selected = option_menu("DashBoard", ['Home', 'Tasks', 'Teams', 'Settings'], 
             icons=['house', 'list-task', 'microsoft-teams', 'gear'], default_index=1,
                 styles={
-        "container": {"padding": "0!important", "background-color": "#0F161E", "border-radius" : "10px"},
+        "container": {"padding": "important", "background-color": "#0F161E", "border-radius" : "10px"},
         "icon": {"color": "white", "font-size": "20px"}, 
-        "nav-link": {"font-size": "20px", "text-align": "left", "margin":"5px", "--hover-color": "#eee", "border-radius" : "10px"},
+        "nav-link": {"font-size": "20px", "text-align": "center", "margin":"10px", "--hover-color": "#eee", "border-radius" : "10px"},
         "nav-link-selected": {"background-color": "orange"},
         }
     )
